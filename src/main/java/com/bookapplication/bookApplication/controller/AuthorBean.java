@@ -29,6 +29,7 @@ public class AuthorBean implements Serializable{
         this.authorsList = this.authorService.getAllAuthors();
     }
 
+
     public void addNewAuthor() {
         this.authorsEntity = new AuthorsEntity();
     }

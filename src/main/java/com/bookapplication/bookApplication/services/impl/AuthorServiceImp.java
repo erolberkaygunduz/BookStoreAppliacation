@@ -61,7 +61,6 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public List<BookEntity> getBooksByAuthor(String authorName) {
-        return entityManager.createQuery("select b,a from BookEntity b left join BookEntity.authorsEntity. ba on b.id = ba. left join AuthorsEntity a on ba.author_fk = a.author_id WHERE\n" +
-                "\ta.author_id = 4").getResultList();
+        return entityManager.createQuery("select b from BookEntity b,AuthorsEntity a where b.bookAuthorName = a.authorName and a.authorName =:authorName").getResultList();
     }
 }
