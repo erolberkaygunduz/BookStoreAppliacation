@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Kitapci</title>
+</h:head>
+<style type="text/css">
+    button.ui-button {
+        margin-right: .5rem;
+    }
+</style>
+<h:body>
+    <h:form id="form">
+        <div id="divOne" class="card">
+            <p:growl id="msgs" showDetail="true" />
+
+            <p:dataTable id="dtBookTable" widgetVar="dtBooks" var="book"
+                         value="#{bookBean.bookList}" styleClass="books-table"
+                         paginator="true" rows="10" editable="true" editMode="cell"
+                         paginatorPosition="bottom">
+
+                <p:column headerText="Id" sortBy="#{book.id}" filterBy="#{book.id}">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{book.id}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{book.id}" style="width:100%" label="id" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Name" sortBy="#{book.bookName}"
+                          filterBy="#{book.bookName}">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{book.bookName}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{book.bookName}" style="width:100%"
+                                         label="Name" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Author" sortBy="#{book.bookAuthorName}"
+                          filterBy="#{book.author}">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{book.bookAuthorName}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{book.bookAuthorName}" style="width:100%"
+                                         label="Author" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Genre" sortBy="#{book.genre}"
+                          filterBy="#{book.genre}">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{book.genre}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{book.genre}" style="width:100%"
+                                         label="Genre" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Price" sortBy="#{book.price}">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{book.price}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{book.price}" style="width:100%"
+                                         label="Price" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column exportable="false">
+                    <p:commandButton icon="pi pi-check" process="@this" update=":form"
+                                     actionListener="#{bookBean.updateBook}"
+                                     styleClass="edit-button rounded-button ui-button-success">
+                        <f:setPropertyActionListener value="#{book}"
+                                                     target="#{bookBean.bookEntity}" />
+                    </p:commandButton>
+                    <p:commandButton class="ui-button-warning rounded-button"
+                                     icon="pi pi-trash" process="@this"
+                                     oncomplete="PF('deleteBookDialog').show()">
+                        <f:setPropertyActionListener value="#{book}" target="#{bookBean.bookEntity}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <div class="p-grid p-mt-3">
+                <div class="p-col-12">
+                    <p:commandButton value="Add new Book." process="@this"
+                                     update="dtBookTable" ajax="true"
+                                     oncomplete="PF('manageBookDialog').show()" />
+                    <p:commandButton value="All Authors." process="@this"
+                                     update=":form"
+                                     oncomplete="PF('manageAuthorDialog').show()" />
+                </div>
+            </div>
+
+            <p:confirmDialog widgetVar="deleteBookDialog" showEffect="fade"
+                             width="300" message="Kitap silinsin mi?"
+                             header="Onayliyor musunuz ? " severity="warn">
+                <p:commandButton value="Evet" icon="pi pi-check"
+                                 actionListener="#{bookBean.deleteBook}" process="@this"
+                                 oncomplete="PF('deleteBookDialog').hide()" update="@form"
+                                 onsuccess="javascript:window.location.reload()">
+                    <f:ajax execute="@form" render=":form" />
+                </p:commandButton>
+                <p:commandButton value="Hayir" type="button"
+                                 styleClass="ui-button-secondary" icon="pi pi-times"
+                                 style="margin-left: .5rem" onclick="PF('deleteBookDialog').hide()" />
+            </p:confirmDialog>
+
+
+            <p:dialog header="New Book" showEffect="fade" modal="true"
+                      dynamic="true" widgetVar="manageBookDialog" responsive="true">
+                <p:outputPanel id="manage-book-content" class="ui-fluid">
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel for="name">Book Name</p:outputLabel>
+                            <p:inputText id="name" value="#{bookBean.bookEntity.bookName}"
+                                         required="true" />
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="author">Author</p:outputLabel>
+                            <p:inputText id="author" value="#{bookBean.authorsEntity.authorName}" required="true" />
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="genre">Genre</p:outputLabel>
+                            <p:inputText id="genre" value="#{bookBean.bookEntity.genre}" required="true"/>
+                        </div>
+                        <div class="p-formgrid p-grid">
+                            <div class="p-field p-col">
+                                <p:outputLabel for="price">Price</p:outputLabel>
+                                <p:inputNumber id="price" value="#{bookBean.bookEntity.price}"
+                                               decimalSeparator="." thousandSeparator="," required="true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Save" icon="pi pi-check"
+                                     actionListener="#{bookBean.createBook}" update="@form"
+                                     onsuccess="javascript:window.location.reload()"
+                                     process="manage-book-content @this"/>
+                    <p:commandButton value="Cancel" icon="pi pi-times"
+                                     onclick="PF('manageBookDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+
+            <p:dialog header="Author List" showEffect="fade" modal="true"
+                      dynamic="true" widgetVar="manageAuthorDialog" responsive="true">
+                <p:outputPanel id="manage-author-content" class="ui-fluid">
+                    <p:outputLabel>
+                        <p:dataTable id="dtAuthorTable" widgetVar="dtAuthors" var="author"
+                                     value="#{authorBean.authorsList}" styleClass="author-table"
+                                     paginator="true" rows="5" paginatorPosition="bottom" style="">
+                            <p:column headerText="Name" sortBy="#{author.authorName}">
+                                        <h:outputText value="#{author.authorName}" />
+                            </p:column>
+                            <p:column headerText="Books">
+                                <h:outputText value="#{authorBean.createBook}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputLabel>
+                </p:outputPanel>
+            </p:dialog>
+        </div>
+    </h:form>
+</h:body>
+</html>
