@@ -8,11 +8,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 @Transactional
@@ -23,7 +26,9 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public void addAuthor(AuthorsEntity authorsEntity) {
-        entityManager.getTransaction().begin();
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
         entityManager.persist(authorsEntity);
         entityManager.getTransaction().commit();
     }
@@ -45,22 +50,37 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public void update(AuthorsEntity authorsEntity) {
-        entityManager.getTransaction().begin();
-        if(authorsEntity.getAuthorName() != null){
-            entityManager.merge(authorsEntity);
-        }
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }        entityManager.merge(authorsEntity);
         entityManager.getTransaction().commit();
     }
 
     @Override
     public void delete(AuthorsEntity authorsEntity) {
-        entityManager.getTransaction().begin();
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
         entityManager.remove(authorsEntity);
         entityManager.getTransaction().commit();
     }
 
     @Override
-    public List<BookEntity> getBooksByAuthor(String authorName) {
-        return entityManager.createQuery("select b from BookEntity b,AuthorsEntity a where b.bookAuthorName = a.authorName and a.authorName =:authorName").getResultList();
+    public Map<String, String> getBooksByAuthor() {
+        Map<String,String> mapp = new HashMap<>();
+        List authorList = entityManager.createQuery("select distinct a.authorName from AuthorsEntity a").getResultList();
+        for (Object name : authorList){
+            String authorName = name.toString();
+            TypedQuery<BookEntity> bookQuery = entityManager.createQuery("select b from BookEntity b WHERE b.bookAuthorName =:authorNameParam",BookEntity.class);
+            bookQuery.setParameter("authorNameParam",authorName);
+            List<BookEntity> bookList = bookQuery.getResultList();
+            StringBuilder bookNames = new StringBuilder();
+            for (BookEntity books :bookList){
+                bookNames.append(books.getBookName());
+                bookNames.append(", ");
+            }
+            mapp.put(authorName,bookNames.toString());
+        }
+        return mapp;
     }
 }

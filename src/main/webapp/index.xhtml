@@ -21,7 +21,7 @@
             <p:dataTable id="dtBookTable" widgetVar="dtBooks" var="book"
                          value="#{bookBean.bookList}" styleClass="books-table"
                          paginator="true" rows="10" editable="true" editMode="cell"
-                         paginatorPosition="bottom">
+                         paginatorPosition="bottom" emptyMessage="Kayıt bulunamadı.">
 
                 <p:column headerText="Id" sortBy="#{book.id}" filterBy="#{book.id}">
                     <p:cellEditor>
@@ -87,8 +87,7 @@
                     <p:commandButton icon="pi pi-check" process="@this" update=":form"
                                      actionListener="#{bookBean.updateBook}"
                                      styleClass="edit-button rounded-button ui-button-success">
-                        <f:setPropertyActionListener value="#{book}"
-                                                     target="#{bookBean.bookEntity}" />
+                        <f:setPropertyActionListener value="#{book}" target="#{bookBean.bookEntity}" />
                     </p:commandButton>
                     <p:commandButton class="ui-button-warning rounded-button"
                                      icon="pi pi-trash" process="@this"
@@ -98,12 +97,12 @@
                 </p:column>
             </p:dataTable>
 
-            <div class="p-grid p-mt-3">
+            <div class="p-grid p-mt-3" align="center">
                 <div class="p-col-12">
-                    <p:commandButton value="Add new Book." process="@this"
+                    <p:commandButton value="New Book" process="@this"
                                      update="dtBookTable" ajax="true"
                                      oncomplete="PF('manageBookDialog').show()" />
-                    <p:commandButton value="All Authors." process="@this"
+                    <p:commandButton value="All Authors" process="@this"
                                      update=":form"
                                      oncomplete="PF('manageAuthorDialog').show()" />
                 </div>
@@ -168,12 +167,12 @@
                     <p:outputLabel>
                         <p:dataTable id="dtAuthorTable" widgetVar="dtAuthors" var="author"
                                      value="#{authorBean.authorsList}" styleClass="author-table"
-                                     paginator="true" rows="5" paginatorPosition="bottom" style="">
-                            <p:column headerText="Name" sortBy="#{author.authorName}">
-                                        <h:outputText value="#{author.authorName}" />
+                                     paginator="true" rows="5" paginatorPosition="bottom" emptyMessage="Kayıt bulunamadı.">
+                            <p:column headerText="Name" >
+                                        <h:outputText value="#{author.key}" />
                             </p:column>
-                            <p:column headerText="Books">
-                                <h:outputText value="#{authorBean.createBook}"/>
+                            <p:column headerText="Books" >
+                                <h:outputText value="#{author.value}" />
                             </p:column>
                         </p:dataTable>
                     </p:outputLabel>

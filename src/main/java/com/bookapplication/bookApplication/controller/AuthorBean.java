@@ -1,8 +1,8 @@
 package com.bookapplication.bookApplication.controller;
 
 import com.bookapplication.bookApplication.entity.AuthorsEntity;
-import com.bookapplication.bookApplication.entity.BookEntity;
 import com.bookapplication.bookApplication.services.AuthorService;
+import com.bookapplication.bookApplication.services.BookService;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -11,7 +11,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -19,16 +21,18 @@ public class AuthorBean implements Serializable{
 
     @EJB
     private AuthorService authorService;
+    @EJB
+    private BookService bookService;
 
-    private List<AuthorsEntity> authorsList;
+    private Map<String, String> authorsList;
+
 
     private AuthorsEntity authorsEntity = new AuthorsEntity();
 
     @PostConstruct
     public void init() {
-        this.authorsList = this.authorService.getAllAuthors();
+        this.authorsList = this.authorService.getBooksByAuthor();
     }
-
 
     public void addNewAuthor() {
         this.authorsEntity = new AuthorsEntity();
@@ -48,14 +52,13 @@ public class AuthorBean implements Serializable{
 
     }
 
-
-
-
-    public List<AuthorsEntity> getAuthorsList() {
-        return authorsList;
+    public List<Map.Entry<String, String>> getAuthorsList() {
+        List<Map.Entry<String,String>> entryMap;
+        entryMap = new ArrayList<>(authorsList.entrySet());
+        return entryMap;
     }
 
-    public void setAuthorsList(List<AuthorsEntity> authorsList) {
+    public void setAuthorsList(Map<String, String> authorsList) {
         this.authorsList = authorsList;
     }
 

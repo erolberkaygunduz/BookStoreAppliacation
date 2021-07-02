@@ -1,10 +1,10 @@
 package com.bookapplication.bookApplication.services;
 
 import com.bookapplication.bookApplication.entity.AuthorsEntity;
-import com.bookapplication.bookApplication.entity.BookEntity;
 
 import javax.ejb.Local;
 import java.util.List;
+import java.util.Map;
 
 @Local
 public interface AuthorService {
@@ -19,5 +19,5 @@ public interface AuthorService {
 
     public void delete(AuthorsEntity authorsEntity);
 
-    public List<BookEntity> getBooksByAuthor(String authorName);
+    public Map<String, String> getBooksByAuthor();
 }

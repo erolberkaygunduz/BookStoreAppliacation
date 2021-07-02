@@ -31,22 +31,26 @@ public class BookServiceImpl implements BookService {
     }
 
     public void addBook(BookEntity book) {
-        entityManager.getTransaction().begin();
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
         entityManager.persist(book);
         entityManager.getTransaction().commit();
 
     }
 
     public void update(BookEntity book) {
-        entityManager.getTransaction().begin();
-        if(book.getBookName() != null){
-            entityManager.merge(book);
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
         }
+        //entityManager.merge(book);
         entityManager.getTransaction().commit(); //ilginccc
     }
 
     public void delete(BookEntity book) {
-        entityManager.getTransaction().begin();
+        if (!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
         entityManager.remove(book);
         entityManager.getTransaction().commit();
 

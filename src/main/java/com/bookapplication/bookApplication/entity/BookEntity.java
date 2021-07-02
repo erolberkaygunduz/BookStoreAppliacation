@@ -33,7 +33,7 @@ public class BookEntity implements Serializable {
     //@JoinColumn(name = "author_id", referencedColumnName = "author_id")
     //private AuthorsEntity authorsEntity;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL ,orphanRemoval = true)
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_fk"), inverseJoinColumns = @JoinColumn(name = "author_fk"))
     private Set<AuthorsEntity> authorsEntity = new HashSet<>();
 

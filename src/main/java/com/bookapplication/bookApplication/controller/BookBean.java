@@ -28,7 +28,7 @@ public class BookBean implements Serializable {
     private List<BookEntity> bookList ;
     private List<AuthorsEntity> authorsList;
 
-    private BookEntity bookEntity = new BookEntity();
+    private BookEntity bookEntity =new BookEntity();
 
     private AuthorsEntity authorsEntity = new AuthorsEntity();
 
@@ -56,6 +56,8 @@ public class BookBean implements Serializable {
 
     public void updateBook(){
         this.bookService.update(bookEntity);
+        //this.authorsEntity.setAuthorName(bookEntity.getBookAuthorName());
+        this.authorService.update(authorsEntity);
 
     }
 
